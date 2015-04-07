@@ -1,7 +1,7 @@
 var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } };
 
 (function (root, factory) {
-  if (typeof define === "function" && define.amd) define(factory, ["react"]);else if (typeof exports !== "undefined") {
+  if (typeof define === "function" && define.amd) define(["react"], factory);else if (typeof exports !== "undefined") {
     module.exports = factory(require("react"));
   } else root.FormattedText = factory(root.React);
 })(this, function (React) {
