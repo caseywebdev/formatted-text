@@ -69,7 +69,7 @@ var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; }
     );
   };
 
-  var renderLinks = function (text) {
+  var renderLinks = function (text, key) {
     var links = getLinks(text);
     if (!links.length) return text;
     var length = links.length;
@@ -79,19 +79,15 @@ var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; }
       var to = from + link.text.length;
       return {
         index: to,
-        components: parts.components.concat(renderText(text.slice(parts.index, from), i * 2), renderLink(link, i * 2 + 1), i === length - 1 ? renderText(text.slice(to), length * 2) : null)
+        components: parts.components.concat(renderText(text.slice(parts.index, from), "" + key + "-" + i * 2), renderLink(link, "" + key + "-" + (i * 2 + 1)), i === length - 1 ? renderText(text.slice(to), "" + key + "-" + length * 2) : null)
       };
     }, { index: 0, components: [] }).components;
   };
 
   var renderParagraph = function (text) {
     var lines = text.trim().split(LINE_SPLIT);
-    return lines.reduce(function (lines, line, i) {
-      return lines.concat(React.createElement(
-        "span",
-        { key: i * 2 },
-        renderLinks(line)
-      ), React.createElement("br", { key: i * 2 + 1 }));
+    return lines.reduce(function (paragraph, line, i) {
+      return paragraph.concat(renderLinks(line, i * 2), i === lines.length - 1 ? null : React.createElement("br", { key: i * 2 + 1 }));
     }, []);
   };
 

@@ -61,7 +61,7 @@
     return <a key={key} href={link.url}>{link.text}</a>;
   };
 
-  const renderLinks = text => {
+  const renderLinks = (text, key) => {
     const links = getLinks(text);
     if (!links.length) return text;
     const {length} = links;
@@ -71,9 +71,11 @@
       return {
         index: to,
         components: parts.components.concat(
-          renderText(text.slice(parts.index, from), i * 2),
-          renderLink(link, i * 2 + 1),
-          i === length -1 ? renderText(text.slice(to), length * 2) : null
+          renderText(text.slice(parts.index, from), `${key}-${i * 2}`),
+          renderLink(link, `${key}-${(i * 2) + 1}`),
+          i === length - 1 ?
+          renderText(text.slice(to), `${key}-${length * 2}`) :
+          null
         )
       };
     }, {index: 0, components: []}).components;
@@ -81,9 +83,9 @@
 
   const renderParagraph = text => {
     const lines = text.trim().split(LINE_SPLIT);
-    return lines.reduce((lines, line, i) => lines.concat(
-      <span key={i * 2}>{renderLinks(line)}</span>,
-      <br key={i * 2 + 1} />
+    return lines.reduce((paragraph, line, i) => paragraph.concat(
+      renderLinks(line, i * 2),
+      i === lines.length - 1 ? null : <br key={(i * 2) + 1} />
     ), []);
   };
 

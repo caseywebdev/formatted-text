@@ -11,10 +11,7 @@ A React component for formatting paragraphs, line breaks and links.
 ```html
 <div>
   <p>
-    <span>
-      <span>Email me (</span><a href="mailto:foo@example.com">foo@example.com</a><span>) or visit </span><a href="http://foo.example.com">foo.example.com</a><span>.</span>
-    </span>
-    <br>
+    <span>Email me (</span><a href="mailto:foo@example.com">foo@example.com</a><span>) or visit </span><a href="http://foo.example.com">foo.example.com</a><span>.</span>
   </p>
 </div>
 ```
