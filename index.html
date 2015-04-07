@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html>
+
+  <head>
+    <title>Formatted Text</title>
+  </head>
+
+  <body>
+    <div id='main'></div>
+    <script src='bower_components/react/react.js'></script>
+    <script src='formatted-text.js'></script>
+    <script>
+      (function () {
+        var React = window.React;
+        var FormattedText = window.FormattedText;
+
+        var Test = React.createFactory(React.createClass({
+          getInitialState: function () {
+            return {text: 'This is some text.'};
+          },
+
+          handleChange: function (ev) {
+            this.setState({text: ev.target.value});
+          },
+
+          render: function () {
+            return React.createElement('div', null,
+              React.createElement('textarea', {
+                onChange: this.handleChange,
+                style: {width: 400, height: 200},
+                value: this.state.text
+              }),
+              React.createElement(FormattedText, null, this.state.text)
+            );
+          }
+        }));
+
+        React.render(Test(), document.getElementById('main'));
+      })();
+    </script>
+  </body>
+
+</html>

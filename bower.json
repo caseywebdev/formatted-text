@@ -1,0 +1,17 @@
+{
+  "name": "formatted-text",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "formatted-text.js",
+  "ignore": [
+    ".gitignore",
+    ".npmignore",
+    "cogs.js",
+    "index.html",
+    "Makefile",
+    "package.json"
+  ],
+  "dependencies": {
+    "react": ">= 0.12.0 < 0.14.0"
+  }
+}

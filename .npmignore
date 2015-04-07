@@ -1,0 +1,8 @@
+.gitignore
+bower_components
+node_modules
+bower.json
+cogs.js
+formatted_text.es6
+index.html
+Makefile
