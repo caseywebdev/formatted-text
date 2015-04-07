@@ -1,5 +1,5 @@
 ((root, factory) => {
-  if (typeof define === 'function' && define.amd) define(factory, ['react']);
+  if (typeof define === 'function' && define.amd) define(['react'], factory);
   else if (typeof exports !== 'undefined') {
     module.exports = factory(require('react'));
   } else root.FormattedText = factory(root.React);
