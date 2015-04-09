@@ -25,9 +25,31 @@ var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; }
 
   var DEFAULT_PROTOCOL = "http://";
 
+  var TERMINATORS = {
+    ".": true
+  };
+
+  var WRAPPERS = {
+    "(": ")",
+    "[": "]",
+    "\"": "\"",
+    "'": "'",
+    "<": ">"
+  };
+
+  var unwrap = function (text, index) {
+    var first = text[0];
+    var last = text[text.length - 1];
+
+    if (TERMINATORS[last]) return unwrap(text.slice(0, -1), index);
+    if (WRAPPERS[first] === last) return unwrap(text.slice(1, -1), index + 1);
+    return [text, index];
+  };
+
   var getLinks = function (text) {
     var links = [];
-    for (var match = undefined; match = LINK.exec(text);) {
+    var match = undefined;
+    while (match = LINK.exec(text)) {
       var _match = _slicedToArray(match, 4);
 
       var all = _match[0];
@@ -36,19 +58,22 @@ var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; }
       var preTld = _match[3];
 
       // To qualify as a link, either the protocol or TLD must be specified.
-      if (protocol || tld) {
-        var index = match.index;
-        if (all[all.length - 1] === ".") all = all.slice(0, -1);
-        if (all[0] === "(" && all[all.length - 1] === ")" || all[0] === "[" && all[all.length - 1] === "]") {
-          ++index;
-          all = all.slice(1, -1);
-        }
-        links.push({
-          index: index,
-          text: all,
-          url: protocol ? all : preTld.indexOf("@") !== -1 ? "mailto:" + all : DEFAULT_PROTOCOL + all
-        });
-      }
+      if (!protocol && !tld) continue;
+
+      var index = match.index;
+
+      var _ref = unwrap(all, index);
+
+      var _ref2 = _slicedToArray(_ref, 2);
+
+      all = _ref2[0];
+      index = _ref2[1];
+
+      links.push({
+        index: index,
+        text: all,
+        url: protocol ? all : preTld.indexOf("@") !== -1 ? "mailto:" + all : DEFAULT_PROTOCOL + all
+      });
     }
     return links;
   };

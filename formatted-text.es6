@@ -26,29 +26,44 @@
 
   const DEFAULT_PROTOCOL = 'http://';
 
+  const TERMINATORS = {
+    '.': true
+  };
+
+  const WRAPPERS = {
+    '(': ')',
+    '[': ']',
+    '"': '"',
+    "'": "'",
+    '<': '>'
+  };
+
+  const unwrap = (text, index) => {
+    const [first, last] = [text[0], text[text.length - 1]];
+    if (TERMINATORS[last]) return unwrap(text.slice(0, -1), index);
+    if (WRAPPERS[first] === last) return unwrap(text.slice(1, -1), index + 1);
+    return [text, index];
+  };
+
   const getLinks = text => {
     const links = [];
-    for (let match; match = LINK.exec(text);) {
+    let match;
+    while (match = LINK.exec(text)) {
       let [all, protocol, tld, preTld] = match;
 
       // To qualify as a link, either the protocol or TLD must be specified.
-      if (protocol || tld) {
-        let index = match.index;
-        if (all[all.length - 1] === '.') all = all.slice(0, -1);
-        if ((all[0] === '(' && all[all.length - 1] === ')') ||
-            (all[0] === '[' && all[all.length - 1] === ']')) {
-          ++index;
-          all = all.slice(1, -1);
-        }
-        links.push({
-          index,
-          text: all,
-          url:
-            protocol ? all :
-            preTld.indexOf('@') !== -1 ? `mailto:${all}` :
-            DEFAULT_PROTOCOL + all
-        });
-      }
+      if (!protocol && !tld) continue;
+
+      let {index} = match;
+      [all, index] = unwrap(all, index);
+      links.push({
+        index,
+        text: all,
+        url:
+          protocol ? all :
+          preTld.indexOf('@') !== -1 ? `mailto:${all}` :
+          DEFAULT_PROTOCOL + all
+      });
     }
     return links;
   };
@@ -95,7 +110,6 @@
       paragraph ? <p key={i}>{renderParagraph(paragraph)}</p> : null
     );
   };
-
 
   return React.createClass({
     render() {
