@@ -1,6 +1,7 @@
 ((root, factory) => {
-  if (typeof define === 'function' && define.amd) define(['react'], factory);
-  else if (typeof exports !== 'undefined') {
+  if (typeof define === 'function' && define.amd) {
+    define(['react'], factory);
+  } else if (typeof exports !== 'undefined') {
     module.exports = factory(require('react'));
   } else root.FormattedText = factory(root.React);
 })(this, React => {
@@ -20,15 +21,13 @@
 
     // Group 2: Option 2, TLD specified
     // Group 3: Pre-TLD section
-    '((\\S+?)\\.[a-z-]{2,63}\\S*)',
+    '(\\S+?)(\\.[a-z-]{2,63})(?:/\\S*)?',
     'gi'
   );
 
   const DEFAULT_PROTOCOL = 'http://';
 
-  const TERMINATORS = {
-    '.': true
-  };
+  const TERMINATORS = '.,;:?';
 
   const WRAPPERS = {
     '(': ')',
@@ -40,7 +39,7 @@
 
   const unwrap = (text, index) => {
     const [first, last] = [text[0], text[text.length - 1]];
-    if (TERMINATORS[last]) return unwrap(text.slice(0, -1), index);
+    if (TERMINATORS.indexOf(last) > -1) return unwrap(text.slice(0, -1), index);
     if (WRAPPERS[first] === last) return unwrap(text.slice(1, -1), index + 1);
     return [text, index];
   };
@@ -49,7 +48,7 @@
     const links = [];
     let match;
     while (match = LINK.exec(text)) {
-      let [all, protocol, tld, preTld] = match;
+      let [all, protocol, preTld, tld] = match;
 
       // To qualify as a link, either the protocol or TLD must be specified.
       if (!protocol && !tld) continue;

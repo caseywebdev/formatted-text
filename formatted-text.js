@@ -1,7 +1,9 @@
 var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } };
 
 (function (root, factory) {
-  if (typeof define === "function" && define.amd) define(["react"], factory);else if (typeof exports !== "undefined") {
+  if (typeof define === "function" && define.amd) {
+    define(["react"], factory);
+  } else if (typeof exports !== "undefined") {
     module.exports = factory(require("react"));
   } else root.FormattedText = factory(root.React);
 })(this, function (React) {
@@ -21,13 +23,11 @@ var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; }
 
   // Group 2: Option 2, TLD specified
   // Group 3: Pre-TLD section
-  "((\\S+?)\\.[a-z-]{2,63}\\S*)", "gi");
+  "(\\S+?)(\\.[a-z-]{2,63})(?:/\\S*)?", "gi");
 
   var DEFAULT_PROTOCOL = "http://";
 
-  var TERMINATORS = {
-    ".": true
-  };
+  var TERMINATORS = ".,;:?";
 
   var WRAPPERS = {
     "(": ")",
@@ -41,7 +41,7 @@ var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; }
     var first = text[0];
     var last = text[text.length - 1];
 
-    if (TERMINATORS[last]) return unwrap(text.slice(0, -1), index);
+    if (TERMINATORS.indexOf(last) > -1) return unwrap(text.slice(0, -1), index);
     if (WRAPPERS[first] === last) return unwrap(text.slice(1, -1), index + 1);
     return [text, index];
   };
@@ -54,8 +54,8 @@ var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; }
 
       var all = _match[0];
       var protocol = _match[1];
-      var tld = _match[2];
-      var preTld = _match[3];
+      var preTld = _match[2];
+      var tld = _match[3];
 
       // To qualify as a link, either the protocol or TLD must be specified.
       if (!protocol && !tld) continue;
