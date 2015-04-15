@@ -2,10 +2,7 @@ module.exports = {
   in: {
     es6: {
       out: 'js',
-      transformers: {
-        name: 'babel',
-        options: {modules: 'ignore', blacklist: ['useStrict']}
-      }
+      transformers: {name: 'babel', options: {modules: 'umd'}}
     }
   },
   builds: {'formatted-text.es6': '.'}

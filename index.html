@@ -13,11 +13,11 @@
     <script>
       (function () {
         var React = window.React;
-        var FormattedText = window.FormattedText;
+        var FormattedText = window.formattedText;
 
         var Test = React.createFactory(React.createClass({
           getInitialState: function () {
-            return {text: 'This is some text.'};
+            return {text: this.props.text};
           },
 
           handleChange: function (ev) {
@@ -36,7 +36,20 @@
           }
         }));
 
-        React.render(Test(), document.getElementById('main'));
+        React.render(Test({
+          text: [
+            'Single line paragraph',
+            '',
+            'Double line',
+            'paragraph',
+            '',
+            'foo@example.com.us',
+            '(foo@example.com)',
+            '[foo@example.com].',
+            '<example.com>?',
+            'https://example.com!'
+          ].join('\n')
+        }), document.getElementById('main'));
       })();
     </script>
   </body>

@@ -1,6 +1,6 @@
 {
   "name": "formatted-text",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "MIT",
   "main": "formatted-text.js",
   "repository": {
@@ -12,6 +12,6 @@
   },
   "devDependencies": {
     "cogs": "1.0.3",
-    "cogs-transformer-babel": "1.0.7"
+    "cogs-transformer-babel": "1.0.8"
   }
 }
