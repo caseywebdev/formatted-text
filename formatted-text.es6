@@ -4,9 +4,7 @@ const PARAGRAPH_SPLIT = /\n{2,}/;
 
 const LINE_SPLIT = /\n/;
 
-const LINK = /(\S+?)(\.[a-z-]{2,63})+\S*/gi;
-
-const PROTOCOL = /\w+:\/\//;
+const LINK = /(?:\S+)(\w+:\/\/)\S*|(\S+)(\.[a-z-]{2,63})+\S*/gi;
 
 const DEFAULT_PROTOCOL = 'http://';
 
@@ -31,8 +29,7 @@ const getLinks = text => {
   const links = [];
   let match;
   while (match = LINK.exec(text)) {
-    let [all, preTld, tld] = match;
-    const protocol = PROTOCOL.test(preTld);
+    let [all, protocol, preTld, tld] = match;
 
     // To qualify as a link, either the protocol or TLD must be specified.
     if (!protocol && !tld) continue;
@@ -96,10 +93,12 @@ const renderParagraphs = text => {
 
 export default React.createClass({
   propTypes: {
-    children: React.PropTypes.string.isRequired
+    children: React.PropTypes.string
   },
 
   render() {
-    return <div>{renderParagraphs(this.props.children)}</div>;
+    const {children} = this.props;
+    const text = typeof children === 'string' && children || '';
+    return <div {...this.props}>{renderParagraphs(text)}</div>;
   }
 });

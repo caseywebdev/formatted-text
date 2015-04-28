@@ -23,9 +23,7 @@
 
   var LINE_SPLIT = /\n/;
 
-  var LINK = /(\S+?)(\.[a-z-]{2,63})+\S*/gi;
-
-  var PROTOCOL = /\w+:\/\//;
+  var LINK = /(?:\S+)(\w+:\/\/)\S*|(\S+)(\.[a-z-]{2,63})+\S*/gi;
 
   var DEFAULT_PROTOCOL = 'http://';
 
@@ -62,13 +60,12 @@
     var links = [];
     var match = undefined;
     while (match = LINK.exec(text)) {
-      var _match = _slicedToArray(match, 3);
+      var _match = _slicedToArray(match, 4);
 
       var all = _match[0];
-      var preTld = _match[1];
-      var tld = _match[2];
-
-      var protocol = PROTOCOL.test(preTld);
+      var protocol = _match[1];
+      var preTld = _match[2];
+      var tld = _match[3];
 
       // To qualify as a link, either the protocol or TLD must be specified.
       if (!protocol && !tld) continue;
@@ -147,14 +144,17 @@
     displayName: 'formatted-text',
 
     propTypes: {
-      children: _React.PropTypes.string.isRequired
+      children: _React.PropTypes.string
     },
 
     render: function render() {
+      var children = this.props.children;
+
+      var text = typeof children === 'string' && children || '';
       return _React.createElement(
         'div',
-        null,
-        renderParagraphs(this.props.children)
+        this.props,
+        renderParagraphs(text)
       );
     }
   });
