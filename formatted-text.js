@@ -13,9 +13,15 @@
 })(this, function (exports, module, _react) {
   'use strict';
 
-  var _interopRequire = function (obj) { return obj && obj.__esModule ? obj['default'] : obj; };
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-  var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } };
+  function _interopRequire(obj) { return obj && obj.__esModule ? obj['default'] : obj; }
+
+  function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
   var _React = _interopRequire(_react);
 
@@ -37,24 +43,32 @@
     '<': '>'
   };
 
-  var unwrap = (function (_unwrap) {
-    function unwrap(_x, _x2) {
-      return _unwrap.apply(this, arguments);
+  var unwrap = function unwrap(_x, _x2) {
+    var _again = true;
+
+    _function: while (_again) {
+      first = last = undefined;
+      _again = false;
+      var text = _x,
+          index = _x2;
+      var first = text[0];
+      var last = text[text.length - 1];
+
+      if (TERMINATORS.indexOf(last) > -1) {
+        _x = text.slice(0, -1);
+        _x2 = index;
+        _again = true;
+        continue _function;
+      }
+      if (WRAPPERS[first] === last) {
+        _x = text.slice(1, -1);
+        _x2 = index + 1;
+        _again = true;
+        continue _function;
+      }
+      return [text, index];
     }
-
-    unwrap.toString = function () {
-      return _unwrap.toString();
-    };
-
-    return unwrap;
-  })(function (text, index) {
-    var first = text[0];
-    var last = text[text.length - 1];
-
-    if (TERMINATORS.indexOf(last) > -1) return unwrap(text.slice(0, -1), index);
-    if (WRAPPERS[first] === last) return unwrap(text.slice(1, -1), index + 1);
-    return [text, index];
-  });
+  };
 
   var getLinks = function getLinks(text) {
     var links = [];
@@ -72,12 +86,12 @@
 
       var index = match.index;
 
-      var _unwrap2 = unwrap(all, index);
+      var _unwrap = unwrap(all, index);
 
-      var _unwrap22 = _slicedToArray(_unwrap2, 2);
+      var _unwrap2 = _slicedToArray(_unwrap, 2);
 
-      all = _unwrap22[0];
-      index = _unwrap22[1];
+      all = _unwrap2[0];
+      index = _unwrap2[1];
 
       links.push({
         index: index,
@@ -89,13 +103,11 @@
   };
 
   var renderText = function renderText(text, key) {
-    if (text) {
-      return _React.createElement(
-        'span',
-        { key: key },
-        text
-      );
-    }
+    if (text) return _React.createElement(
+      'span',
+      { key: key },
+      text
+    );
   };
 
   var renderLink = function renderLink(link, key) {
@@ -108,9 +120,8 @@
 
   var renderLinks = function renderLinks(text, key) {
     var links = getLinks(text);
-    if (!links.length) {
-      return text;
-    }var length = links.length;
+    if (!links.length) return text;
+    var length = links.length;
 
     return links.reduce(function (parts, link, i) {
       var from = link.index;
@@ -140,22 +151,39 @@
     });
   };
 
-  module.exports = _React.createClass({
-    displayName: 'formatted-text',
+  var FormattedText = (function (_React$Component) {
+    function FormattedText() {
+      _classCallCheck(this, FormattedText);
 
-    propTypes: {
-      children: _React.PropTypes.string
-    },
-
-    render: function render() {
-      var children = this.props.children;
-
-      var text = typeof children === 'string' && children || '';
-      return _React.createElement(
-        'div',
-        this.props,
-        renderParagraphs(text)
-      );
+      if (_React$Component != null) {
+        _React$Component.apply(this, arguments);
+      }
     }
-  });
+
+    _inherits(FormattedText, _React$Component);
+
+    _createClass(FormattedText, [{
+      key: 'render',
+      value: function render() {
+        var children = this.props.children;
+
+        var text = typeof children === 'string' ? children : '';
+        return _React.createElement(
+          'div',
+          this.props,
+          renderParagraphs(text)
+        );
+      }
+    }], [{
+      key: 'propTypes',
+      value: {
+        children: _React.PropTypes.string
+      },
+      enumerable: true
+    }]);
+
+    return FormattedText;
+  })(_React.Component);
+
+  module.exports = FormattedText;
 });

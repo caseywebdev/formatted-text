@@ -91,14 +91,14 @@ const renderParagraphs = text => {
   );
 };
 
-export default React.createClass({
-  propTypes: {
+export default class FormattedText extends React.Component {
+  static propTypes = {
     children: React.PropTypes.string
-  },
+  }
 
   render() {
     const {children} = this.props;
-    const text = typeof children === 'string' && children || '';
+    const text = typeof children === 'string' ? children : '';
     return <div {...this.props}>{renderParagraphs(text)}</div>;
   }
-});
+}
