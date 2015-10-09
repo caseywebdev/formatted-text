@@ -85,20 +85,12 @@ const renderParagraph = text => {
 };
 
 const renderParagraphs = text => {
+  if (typeof text !== 'string') text = '';
   const paragraphs = text.trim().split(PARAGRAPH_SPLIT);
   return paragraphs.map((paragraph, i) =>
     paragraph ? <p key={i}>{renderParagraph(paragraph)}</p> : null
   );
 };
 
-export default class FormattedText extends React.Component {
-  static propTypes = {
-    children: React.PropTypes.string
-  }
-
-  render() {
-    const {children} = this.props;
-    const text = typeof children === 'string' ? children : '';
-    return <div {...this.props}>{renderParagraphs(text)}</div>;
-  }
-}
+export default props =>
+  <div {...props}>{renderParagraphs(props.children)}</div>;

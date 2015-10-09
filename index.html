@@ -8,11 +8,13 @@
 
   <body>
     <div id='main'></div>
-    <script src='bower_components/react/react.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-with-addons.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.min.js'></script>
     <script src='formatted-text.js'></script>
     <script>
       (function () {
         var React = window.React;
+        var ReactDOM = window.ReactDOM;
         var FormattedText = window.formattedText;
 
         var Test = React.createFactory(React.createClass({
@@ -36,7 +38,7 @@
           }
         }));
 
-        React.render(Test({
+        ReactDOM.render(Test({
           text: [
             'Single line paragraph',
             '',
