@@ -4,7 +4,7 @@ const PARAGRAPH_SPLIT = /\n{2,}/;
 
 const LINE_SPLIT = /\n/;
 
-const LINK = /(?:\S+)(\w+:\/\/)\S*|(\S+)(\.[a-z-]{2,63})+\S*/gi;
+const LINK = /(?:\S+)(\w+:\/\/)\S*|([^\s.]+)(\.[a-z-]{2,63})+\S*/gi;
 
 const DEFAULT_PROTOCOL = 'http://';
 

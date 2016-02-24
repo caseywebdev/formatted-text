@@ -23,7 +23,7 @@
 
   var LINE_SPLIT = /\n/;
 
-  var LINK = /(?:\S+)(\w+:\/\/)\S*|(\S+)(\.[a-z-]{2,63})+\S*/gi;
+  var LINK = /(?:\S+)(\w+:\/\/)\S*|([^\s.]+)(\.[a-z-]{2,63})+\S*/gi;
 
   var DEFAULT_PROTOCOL = 'http://';
 
