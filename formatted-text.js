@@ -110,7 +110,7 @@
   var renderLink = function renderLink(link, key) {
     return _React['default'].createElement(
       'a',
-      { key: key, href: link.url },
+      { key: key, target: "_blank", href: link.url },
       link.text
     );
   };
