@@ -1,6 +1,6 @@
 {
   "name": "formatted-text",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "main": "formatted-text.js",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://github.com/orgsync/formatted-text"
   },
   "peerDependencies": {
-    "react": ">= 0.14.0 < 0.15.0"
+    "react": "0.14 || 15"
   },
   "devDependencies": {
     "cogs": "1.0.7",
