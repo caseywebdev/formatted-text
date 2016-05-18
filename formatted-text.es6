@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 
 const PARAGRAPH_SPLIT = /\n{2,}/;
 
@@ -48,15 +48,9 @@ const getLinks = text => {
   return links;
 };
 
-const renderText = (text, key) => {
-  if (text) return <span key={key}>{text}</span>;
-};
+const KeyProxy = ({children}) => children;
 
-const renderLink = (link, key) => {
-  return <a key={key} href={link.url}>{link.text}</a>;
-};
-
-const renderLinks = (text, key) => {
+const renderLinks = (text, key, props) => {
   const links = getLinks(text);
   if (!links.length) return text;
   const {length} = links;
@@ -66,31 +60,42 @@ const renderLinks = (text, key) => {
     return {
       index: to,
       components: parts.components.concat(
-        renderText(text.slice(parts.index, from), `${key}-${i * 2}`),
-        renderLink(link, `${key}-${(i * 2) + 1}`),
-        i === length - 1 ?
-        renderText(text.slice(to), `${key}-${length * 2}`) :
-        null
+        text.slice(parts.index, from),
+        <KeyProxy key={`${key}-${i}`}>{props.linkRenderer(link)}</KeyProxy>,
+        i === length - 1 ? text.slice(to) : null
       )
     };
   }, {index: 0, components: []}).components;
 };
 
-const renderParagraph = text => {
+const renderParagraph = (text, props) => {
   const lines = text.trim().split(LINE_SPLIT);
   return lines.reduce((paragraph, line, i) => paragraph.concat(
-    renderLinks(line, i * 2),
-    i === lines.length - 1 ? null : <br key={(i * 2) + 1} />
+    renderLinks(line, i, props),
+    i === lines.length - 1 ? null : <br key={i} />
   ), []);
 };
 
-const renderParagraphs = text => {
-  if (typeof text !== 'string') text = '';
-  const paragraphs = text.trim().split(PARAGRAPH_SPLIT);
+const renderParagraphs = props => {
+  let {children} = props;
+  if (typeof children !== 'string') children = '';
+  const paragraphs = children.trim().split(PARAGRAPH_SPLIT);
   return paragraphs.map((paragraph, i) =>
-    paragraph ? <p key={i}>{renderParagraph(paragraph)}</p> : null
+    paragraph ? <p key={i}>{renderParagraph(paragraph, props)}</p> : null
   );
 };
 
-export default props =>
-  <div {...props}>{renderParagraphs(props.children)}</div>;
+const FormattedText = props =>
+  <div {...props}>{renderParagraphs(props)}</div>;
+
+FormattedText.propTypes = {
+  children: PropTypes.string.isRequired,
+  linkRenderer: PropTypes.func.isRequired
+};
+
+FormattedText.defaultProps = {
+  children: '',
+  linkRenderer: ({url, text}) => <a href={url}>{text}</a>
+};
+
+export default FormattedText;

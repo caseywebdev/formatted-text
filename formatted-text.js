@@ -99,23 +99,12 @@
     return links;
   };
 
-  var renderText = function renderText(text, key) {
-    if (text) return _React['default'].createElement(
-      'span',
-      { key: key },
-      text
-    );
+  var KeyProxy = function KeyProxy(_ref) {
+    var children = _ref.children;
+    return children;
   };
 
-  var renderLink = function renderLink(link, key) {
-    return _React['default'].createElement(
-      'a',
-      { key: key, href: link.url },
-      link.text
-    );
-  };
-
-  var renderLinks = function renderLinks(text, key) {
+  var renderLinks = function renderLinks(text, key, props) {
     var links = getLinks(text);
     if (!links.length) return text;
     var length = links.length;
@@ -125,35 +114,61 @@
       var to = from + link.text.length;
       return {
         index: to,
-        components: parts.components.concat(renderText(text.slice(parts.index, from), key + '-' + i * 2), renderLink(link, key + '-' + (i * 2 + 1)), i === length - 1 ? renderText(text.slice(to), key + '-' + length * 2) : null)
+        components: parts.components.concat(text.slice(parts.index, from), _React['default'].createElement(
+          KeyProxy,
+          { key: key + '-' + i },
+          props.linkRenderer(link)
+        ), i === length - 1 ? text.slice(to) : null)
       };
     }, { index: 0, components: [] }).components;
   };
 
-  var renderParagraph = function renderParagraph(text) {
+  var renderParagraph = function renderParagraph(text, props) {
     var lines = text.trim().split(LINE_SPLIT);
     return lines.reduce(function (paragraph, line, i) {
-      return paragraph.concat(renderLinks(line, i * 2), i === lines.length - 1 ? null : _React['default'].createElement('br', { key: i * 2 + 1 }));
+      return paragraph.concat(renderLinks(line, i, props), i === lines.length - 1 ? null : _React['default'].createElement('br', { key: i }));
     }, []);
   };
 
-  var renderParagraphs = function renderParagraphs(text) {
-    if (typeof text !== 'string') text = '';
-    var paragraphs = text.trim().split(PARAGRAPH_SPLIT);
+  var renderParagraphs = function renderParagraphs(props) {
+    var children = props.children;
+
+    if (typeof children !== 'string') children = '';
+    var paragraphs = children.trim().split(PARAGRAPH_SPLIT);
     return paragraphs.map(function (paragraph, i) {
       return paragraph ? _React['default'].createElement(
         'p',
         { key: i },
-        renderParagraph(paragraph)
+        renderParagraph(paragraph, props)
       ) : null;
     });
   };
 
-  module.exports = function (props) {
+  var FormattedText = function FormattedText(props) {
     return _React['default'].createElement(
       'div',
       props,
-      renderParagraphs(props.children)
+      renderParagraphs(props)
     );
   };
+
+  FormattedText.propTypes = {
+    children: _react.PropTypes.string.isRequired,
+    linkRenderer: _react.PropTypes.func.isRequired
+  };
+
+  FormattedText.defaultProps = {
+    children: '',
+    linkRenderer: function linkRenderer(_ref2) {
+      var url = _ref2.url;
+      var text = _ref2.text;
+      return _React['default'].createElement(
+        'a',
+        { href: url },
+        text
+      );
+    }
+  };
+
+  module.exports = FormattedText;
 });
