@@ -17,6 +17,8 @@
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+  function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
   var _React = _interopRequireDefault(_react);
 
   var PARAGRAPH_SPLIT = /\n{2,}/;
@@ -144,11 +146,16 @@
     });
   };
 
-  var FormattedText = function FormattedText(props) {
+  var FormattedText = function FormattedText(_ref2) {
+    var children = _ref2.children;
+    var linkRenderer = _ref2.linkRenderer;
+
+    var divProps = _objectWithoutProperties(_ref2, ['children', 'linkRenderer']);
+
     return _React['default'].createElement(
       'div',
-      props,
-      renderParagraphs(props)
+      divProps,
+      renderParagraphs({ children: children, linkRenderer: linkRenderer })
     );
   };
 
@@ -159,9 +166,9 @@
 
   FormattedText.defaultProps = {
     children: '',
-    linkRenderer: function linkRenderer(_ref2) {
-      var url = _ref2.url;
-      var text = _ref2.text;
+    linkRenderer: function linkRenderer(_ref3) {
+      var url = _ref3.url;
+      var text = _ref3.text;
       return _React['default'].createElement(
         'a',
         { href: url },

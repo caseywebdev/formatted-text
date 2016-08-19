@@ -85,8 +85,8 @@ const renderParagraphs = props => {
   );
 };
 
-const FormattedText = props =>
-  <div {...props}>{renderParagraphs(props)}</div>;
+const FormattedText = ({children, linkRenderer, ...divProps}) =>
+  <div {...divProps}>{renderParagraphs({children, linkRenderer})}</div>;
 
 FormattedText.propTypes = {
   children: PropTypes.string.isRequired,
