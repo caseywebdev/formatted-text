@@ -1,6 +1,6 @@
 {
   "name": "formatted-text",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "license": "MIT",
   "main": "formatted-text.js",
   "repository": {
@@ -8,10 +8,14 @@
     "url": "https://github.com/orgsync/formatted-text"
   },
   "peerDependencies": {
-    "react": "0.14 || 15"
+    "react": "0.14 || 15 || 16"
   },
   "devDependencies": {
-    "cogs": "1.0.7",
-    "cogs-transformer-babel": "1.0.12"
+    "@babel/plugin-proposal-class-properties": "7",
+    "@babel/plugin-transform-modules-umd": "7",
+    "@babel/preset-env": "7",
+    "@babel/preset-react": "7",
+    "cogs-transformer-babel": "4",
+    "cogs": "4"
   }
 }

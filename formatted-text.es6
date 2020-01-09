@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 
 const PARAGRAPH_SPLIT = /\n{2,}/;
 
@@ -28,56 +28,64 @@ const unwrap = (text, index) => {
 const getLinks = text => {
   const links = [];
   let match;
-  while (match = LINK.exec(text)) {
+  while ((match = LINK.exec(text))) {
     let [all, protocol, preTld, tld] = match;
 
     // To qualify as a link, either the protocol or TLD must be specified.
     if (!protocol && !tld) continue;
 
-    let {index} = match;
+    let { index } = match;
     [all, index] = unwrap(all, index);
     links.push({
       index,
       text: all,
-      url:
-        protocol ? all :
-        preTld.indexOf('@') !== -1 ? `mailto:${all}` :
-        DEFAULT_PROTOCOL + all
+      url: protocol
+        ? all
+        : preTld.indexOf('@') !== -1
+        ? `mailto:${all}`
+        : DEFAULT_PROTOCOL + all
     });
   }
   return links;
 };
 
-const KeyProxy = ({children}) => children;
+const KeyProxy = ({ children }) => children;
 
 const renderLinks = (text, key, props) => {
   const links = getLinks(text);
   if (!links.length) return text;
-  const {length} = links;
-  return links.reduce((parts, link, i) => {
-    const from = link.index;
-    const to = from + link.text.length;
-    return {
-      index: to,
-      components: parts.components.concat(
-        text.slice(parts.index, from),
-        <KeyProxy key={`${key}-${i}`}>{props.linkRenderer(link)}</KeyProxy>,
-        i === length - 1 ? text.slice(to) : null
-      )
-    };
-  }, {index: 0, components: []}).components;
+  const { length } = links;
+  return links.reduce(
+    (parts, link, i) => {
+      const from = link.index;
+      const to = from + link.text.length;
+      return {
+        index: to,
+        components: parts.components.concat(
+          text.slice(parts.index, from),
+          <KeyProxy key={`${key}-${i}`}>{props.linkRenderer(link)}</KeyProxy>,
+          i === length - 1 ? text.slice(to) : null
+        )
+      };
+    },
+    { index: 0, components: [] }
+  ).components;
 };
 
 const renderParagraph = (text, props) => {
   const lines = text.trim().split(LINE_SPLIT);
-  return lines.reduce((paragraph, line, i) => paragraph.concat(
-    renderLinks(line, i, props),
-    i === lines.length - 1 ? null : <br key={i} />
-  ), []);
+  return lines.reduce(
+    (paragraph, line, i) =>
+      paragraph.concat(
+        renderLinks(line, i, props),
+        i === lines.length - 1 ? null : <br key={i} />
+      ),
+    []
+  );
 };
 
 const renderParagraphs = props => {
-  let {children} = props;
+  let { children } = props;
   if (typeof children !== 'string') children = '';
   const paragraphs = children.trim().split(PARAGRAPH_SPLIT);
   return paragraphs.map((paragraph, i) =>
@@ -85,17 +93,7 @@ const renderParagraphs = props => {
   );
 };
 
-const FormattedText = ({children, linkRenderer, ...divProps}) =>
-  <div {...divProps}>{renderParagraphs({children, linkRenderer})}</div>;
-
-FormattedText.propTypes = {
-  children: PropTypes.string.isRequired,
-  linkRenderer: PropTypes.func.isRequired
-};
-
-FormattedText.defaultProps = {
-  children: '',
-  linkRenderer: ({url, text}) => <a href={url}>{text}</a>
-};
-
-export default FormattedText;
+export default ({
+  children = '',
+  linkRenderer = ({ url, text }) => <a href={url}>{text}</a>
+}) => <>{renderParagraphs({ children, linkRenderer })}</>;

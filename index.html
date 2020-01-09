@@ -8,57 +8,48 @@
 
   <body>
     <div id='main'></div>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.0/react.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.0/react-dom.js'></script>
+    <script src='https://unpkg.com/react@16/umd/react.development.js'></script>
+    <script src='https://unpkg.com/react-dom@16/umd/react-dom.development.js'></script>
     <script src='formatted-text.js'></script>
     <script>
       (function () {
         var React = window.React;
         var ReactDOM = window.ReactDOM;
-        var FormattedText = window.formattedText;
+        var FormattedText = window.FormattedText.default;
 
-        var Test = React.createFactory(React.createClass({
-          getInitialState: function () {
-            return {text: this.props.text};
-          },
+        const Test = ({text: initialText}) => {
+          const [text, setText] = React.useState(initialText);
+          return React.createElement('div', null,
+            React.createElement('textarea', {
+              onChange: ev => setText(ev.target.value),
+              style: {width: 400, height: 200},
+              value: text
+            }),
+            React.createElement(FormattedText, {
+              linkRenderer: function (link) {
+                var url = link.url;
+                var text = link.text;
 
-          handleChange: function (ev) {
-            this.setState({text: ev.target.value});
-          },
-
-          render: function () {
-            return React.createElement('div', null,
-              React.createElement('textarea', {
-                onChange: this.handleChange,
-                style: {width: 400, height: 200},
-                value: this.state.text
-              }),
-              React.createElement(FormattedText, {
-                linkRenderer: function (link) {
-                  var url = link.url;
-                  var text = link.text;
-
-                  var YT = /^(?:https?:\/\/)?(?:youtu\.be\/(\w+)|(?:www\.)?youtube.com\/watch\?v=(\w+))$/;
-                  var match = url.match(YT);
-                  if (match) {
-                    var id = match[1] || match[2];
-                    return React.createElement('iframe', {
-                      width: 560,
-                      height: 315,
-                      src: 'https://www.youtube.com/embed/' + id,
-                      frameBorder: 0,
-                      allowFullScreen: true
-                    });
-                  }
-
-                  return React.createElement('a', {href: url}, text);
+                var YT = /^(?:https?:\/\/)?(?:youtu\.be\/(\w+)|(?:www\.)?youtube.com\/watch\?v=(\w+))$/;
+                var match = url.match(YT);
+                if (match) {
+                  var id = match[1] || match[2];
+                  return React.createElement('iframe', {
+                    width: 560,
+                    height: 315,
+                    src: 'https://www.youtube.com/embed/' + id,
+                    frameBorder: 0,
+                    allowFullScreen: true
+                  });
                 }
-              }, this.state.text)
-            );
-          }
-        }));
 
-        ReactDOM.render(Test({
+                return React.createElement('a', {href: url}, text);
+              }
+            }, text)
+          );
+        };
+
+        ReactDOM.render(React.createElement(Test, {
           text: [
             'Single line paragraph',
             '',
