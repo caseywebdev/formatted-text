@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import { Fragment, createElement } from 'react';
 
 const LINK = /(?:\S+)(\w+:\/\/)\S*|[^\s.]+(\.[a-z-]{2,63})+\S*/gi;
 
@@ -57,9 +57,7 @@ const renderLinks = ({ LinkComponent, text }) => {
         index: to,
         components: parts.components.concat(
           text.slice(parts.index, from),
-          <LinkComponent key={i} href={href}>
-            {children}
-          </LinkComponent>,
+          createElement(LinkComponent, { href, key: i }, children),
           i === length - 1 ? text.slice(to) : []
         )
       };
@@ -74,10 +72,12 @@ export default ({ children, LinkComponent = 'a' }) => {
   return children
     .trim()
     .split('\n')
-    .map((line, i, lines) => (
-      <Fragment key={i}>
-        {renderLinks({ LinkComponent, text: line })}
-        {i < lines.length - 1 ? <br /> : null}
-      </Fragment>
-    ));
+    .map((line, i, lines) =>
+      createElement(
+        Fragment,
+        { key: i },
+        renderLinks({ LinkComponent, text: line }),
+        i < lines.length - 1 ? createElement('br') : null
+      )
+    );
 };
