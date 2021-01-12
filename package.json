@@ -1,21 +1,16 @@
 {
   "name": "formatted-text",
-  "version": "0.4.0",
+  "version": "0.5.0",
+  "type": "module",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "sideEffects": false,
   "license": "MIT",
-  "main": "formatted-text.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/orgsync/formatted-text"
+    "url": "https://github.com/caseywebdev/formatted-text"
   },
   "peerDependencies": {
-    "react": "0.14 || 15 || 16"
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "7",
-    "@babel/plugin-transform-modules-umd": "7",
-    "@babel/preset-env": "7",
-    "@babel/preset-react": "7",
-    "cogs-transformer-babel": "4",
-    "cogs": "4"
+    "react": "17"
   }
 }
