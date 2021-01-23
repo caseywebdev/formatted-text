@@ -99,7 +99,7 @@ const defaultRender = ({ type, children, ...props }) => {
   if (type === 'link') return createElement('a', props, children);
 
   if (type === 'header') {
-    children = [children[0].replace(/^#*\S/, ''), ...children.slice(1)];
+    children = [children[0].replace(/^#*\s*/, ''), ...children.slice(1)];
     return createElement(`h${Math.min(props.level, 6)}`, { children });
   }
 
