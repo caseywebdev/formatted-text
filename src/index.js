@@ -2,7 +2,7 @@ import { Fragment, createElement } from 'react';
 
 const linkRegexp = /(?:\S+)(\w+:\/\/)\S*|[^\s.]+(\.[a-z-]{2,63})+\S*/gim;
 
-const headerRegexp = /^(#+)[^\S\r\n]*[^#\s].*$/gm;
+const headerRegexp = /^(#+)[^#\r\n].*$/gm;
 
 const defaultProtocol = 'http://';
 
