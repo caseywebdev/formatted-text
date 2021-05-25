@@ -65,6 +65,17 @@ const getBlocks = text => {
   return blocks.sort(comparator);
 };
 
+const fallbackRender = ({ type, children, ...props }) => {
+  if (type === 'link') return createElement('a', props, children);
+
+  if (type === 'header') {
+    children = [children[0].replace(/^#*\s*/, ''), ...children.slice(1)];
+    return createElement(`h${Math.min(props.level, 6)}`, { children });
+  }
+
+  return null;
+};
+
 const renderBlocks = ({ blocks, render, text }) => {
   if (!blocks.length) return [text];
 
@@ -85,9 +96,10 @@ const renderBlocks = ({ blocks, render, text }) => {
       ++i;
     }
     const children = renderBlocks({ blocks: subBlocks, render, text: subtext });
-    components.push(
-      createElement(Fragment, { key: i }, render({ children, type, ...props }))
-    );
+    const renderArgs = { children, type, ...props };
+    let rendered = render?.(renderArgs);
+    if (rendered === undefined) rendered = fallbackRender(renderArgs);
+    components.push(createElement(Fragment, { key: i }, rendered));
 
     components.push(text.slice(to, blocks[i + 1]?.from));
   }
@@ -95,18 +107,7 @@ const renderBlocks = ({ blocks, render, text }) => {
   return components;
 };
 
-const defaultRender = ({ type, children, ...props }) => {
-  if (type === 'link') return createElement('a', props, children);
-
-  if (type === 'header') {
-    children = [children[0].replace(/^#*\s*/, ''), ...children.slice(1)];
-    return createElement(`h${Math.min(props.level, 6)}`, { children });
-  }
-
-  return null;
-};
-
-export default ({ children: text, render = defaultRender }) =>
+export default ({ children: text, render }) =>
   typeof text === 'string'
     ? renderBlocks({ blocks: getBlocks(text), render, text })
     : null;
