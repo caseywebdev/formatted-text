@@ -31,13 +31,8 @@ const unwrap = (text, index) => {
 const comparator = (a, b) =>
   a.from < b.from ? -1 : a.from > b.from ? 1 : a.to >= b.to ? -1 : 1;
 
-const getBlocks = ({
-  context,
-  context: { getAtMentionable, indexMarkers },
-  text,
-  offset = 0,
-  previousBlocks = []
-}) => {
+const getBlocks = ({ context, text, offset = 0, previousBlocks = [] }) => {
+  const { getAtMentionable, indexMarkers } = context ?? {};
   const offsetText = text.slice(offset);
   const blocks = [
     ...previousBlocks,
@@ -173,7 +168,7 @@ const renderBlocks = ({ blocks, context, render, text }) => {
   return components;
 };
 
-export default ({ children: text, context = {}, render }) =>
+export default ({ children: text, context, render }) =>
   typeof text === 'string'
     ? renderBlocks({
         blocks: getBlocks({ context, text }),
