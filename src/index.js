@@ -124,7 +124,7 @@ const fallbackRender = ({ children, context, type, ...props }) => {
     return createElement(`h${Math.min(props.level, 6)}`, null, children);
   }
 
-  if (type === 'indexMarker') return <span {...props} />;
+  if (type === 'indexMarker') return createElement('span', props);
 
   return children;
 };
