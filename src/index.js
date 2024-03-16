@@ -1,12 +1,33 @@
 import { Fragment, createElement } from 'react';
 
-const linkRegexp = /(\w+:\/\/)\S+|\S+(\.[a-z-]{2,63})+\S*/gi;
+const local = "[\\w!#$%&'*+/=?^{|}~-]+";
+const tlds = [
+  'au',
+  'biz',
+  'ca',
+  'co',
+  'com',
+  'me',
+  'net',
+  'org',
+  'org',
+  'uk',
+  'us'
+];
+const domain = '(?:[a-z]([a-z0-9-]*[a-z0-9])?)';
+const linkRegexp = new RegExp(
+  // local email part or scheme
+  `(${local}(?:\\.${local})*@|[a-z0-9.+-]://)?` +
+    // domain
+    `(?:${domain}\\.)+(?:${tlds.join('|')})` +
+    // path
+    `(?:/\\S*)?`,
+  'gi'
+);
 
 const headerRegexp = /^(#+)[^#\r\n].*$/gm;
 
 const atMentionRegexp = /@[^@\r\n]+/g;
-
-const defaultProtocol = 'https://';
 
 const initiators = '@#';
 
@@ -56,21 +77,18 @@ const getBlocks = ({ context, text, offset = 0, previousBlocks = [] }) => {
     ),
 
     ...[...offsetText.matchAll(linkRegexp)].flatMap(
-      ({ 0: all, 1: protocol, 2: tld, index }) => {
-        // To qualify as a link, either the protocol or TLD must be specified.
-        if (!protocol && !tld) return [];
-
+      ({ 0: all, 1: prefix, index }) => {
         [all, index] = unwrap(all, index);
         return {
           type: 'link',
           from: offset + index,
           to: offset + index + all.length,
           props: {
-            href: protocol
-              ? all
-              : all.includes('@')
-              ? `mailto:${all}`
-              : defaultProtocol + all
+            href: !prefix
+              ? `https://${all}`
+              : prefix.endsWith('@')
+                ? `mailto:${all}`
+                : all
           }
         };
       }
