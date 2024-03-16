@@ -1,7 +1,18 @@
 import { Fragment, createElement } from 'react';
 
 const local = "[\\w!#$%&'*+/=?^{|}~-]+";
-const tlds = ['biz', 'com', 'net', 'org', 'au', 'ca', 'co', 'me', 'uk', 'us'];
+const tlds = [
+  'au',
+  'biz',
+  'ca',
+  'co',
+  'com',
+  'me',
+  'net',
+  'org',
+  'uk',
+  'us'
+].sort((a, b) => b.length - a.length);
 const domain = '(?:[a-z]([a-z0-9-]*[a-z0-9])?)';
 const linkRegexp = new RegExp(
   // local email part or scheme
