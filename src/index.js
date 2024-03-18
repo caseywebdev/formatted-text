@@ -1,6 +1,7 @@
 import { Fragment, createElement } from 'react';
 
 const local = "[\\w!#$%&'*+/=?^{|}~-]+";
+const schemes = ['http', 'https'].sort((a, b) => b.length - a.length);
 const tlds = [
   'au',
   'biz',
@@ -16,7 +17,7 @@ const tlds = [
 const domain = '(?:[a-z]([a-z0-9-]*[a-z0-9])?)';
 const linkRegexp = new RegExp(
   // local email part or scheme
-  `(${local}(?:\\.${local})*@|[a-z0-9.+-]+://)?` +
+  `(${local}(?:\\.${local})*@|(?:${schemes.join('|')})://)?` +
     // domain
     `(?:${domain}\\.)+(?:${tlds.join('|')})` +
     // path
