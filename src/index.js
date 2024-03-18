@@ -16,7 +16,7 @@ const tlds = [
 const domain = '(?:[a-z]([a-z0-9-]*[a-z0-9])?)';
 const linkRegexp = new RegExp(
   // local email part or scheme
-  `(${local}(?:\\.${local})*@|[a-z0-9.+-]://)?` +
+  `(${local}(?:\\.${local})*@|[a-z0-9.+-]+://)?` +
     // domain
     `(?:${domain}\\.)+(?:${tlds.join('|')})` +
     // path
