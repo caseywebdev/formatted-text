@@ -1,23 +1,13 @@
 import { Fragment, createElement } from 'react';
 
+import tlds from './tlds.js';
+
 const local = "[\\w!#$%&'*+/=?^{|}~-]+";
-const schemes = ['http', 'https'].sort((a, b) => b.length - a.length);
-const tlds = [
-  'au',
-  'biz',
-  'ca',
-  'co',
-  'com',
-  'me',
-  'net',
-  'org',
-  'uk',
-  'us'
-].sort((a, b) => b.length - a.length);
 const domain = '(?:[a-z]([a-z0-9-]*[a-z0-9])?)';
+
 const linkRegexp = new RegExp(
   // local email part or scheme
-  `(${local}(?:\\.${local})*@|(?:${schemes.join('|')})://)?` +
+  `(${local}(?:\\.${local})*@|https?://)?` +
     // domain
     `(?:${domain}\\.)+(?:${tlds.join('|')})` +
     // path
