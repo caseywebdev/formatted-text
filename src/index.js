@@ -11,33 +11,13 @@ const linkRegexp = new RegExp(
     // domain
     `(?:${domain}\\.)+(?:${tlds.join('|')})` +
     // path
-    `(?:/\\S*)?`,
+    `(?:/([\\w!#$&-;=?[\\]~]|%[0-9a-f]{2})*)?`,
   'gi'
 );
 
 const headerRegexp = /^(#+)[^#\r\n].*$/gm;
 
 const atMentionRegexp = /@[^@\r\n]+/g;
-
-const initiators = '@#';
-
-const terminators = '.,;:?!';
-
-const wrappers = {
-  '(': ')',
-  '[': ']',
-  '"': '"',
-  "'": "'",
-  '<': '>'
-};
-
-const unwrap = (text, index) => {
-  const [first, last] = [text[0], text[text.length - 1]];
-  if (wrappers[first] === last) return unwrap(text.slice(1, -1), index + 1);
-  if (initiators.indexOf(first) > -1) return unwrap(text.slice(1), index + 1);
-  if (terminators.indexOf(last) > -1) return unwrap(text.slice(0, -1), index);
-  return [text, index];
-};
 
 const comparator = (a, b) =>
   a.from < b.from ? -1 : a.from > b.from ? 1 : a.to >= b.to ? -1 : 1;
@@ -67,21 +47,18 @@ const getBlocks = ({ context, text, offset = 0, previousBlocks = [] }) => {
     ),
 
     ...[...offsetText.matchAll(linkRegexp)].flatMap(
-      ({ 0: all, 1: prefix, index }) => {
-        [all, index] = unwrap(all, index);
-        return {
-          type: 'link',
-          from: offset + index,
-          to: offset + index + all.length,
-          props: {
-            href: !prefix
-              ? `https://${all}`
-              : prefix.endsWith('@')
-                ? `mailto:${all}`
-                : all
-          }
-        };
-      }
+      ({ 0: all, 1: prefix, index }) => ({
+        type: 'link',
+        from: offset + index,
+        to: offset + index + all.length,
+        props: {
+          href: !prefix
+            ? `https://${all}`
+            : prefix.endsWith('@')
+              ? `mailto:${all}`
+              : all
+        }
+      })
     ),
 
     ...(getAtMentionable
